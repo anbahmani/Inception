@@ -1,6 +1,15 @@
 cd /var/www/html/wordpress
 
-if ! wp core is-installed; then
+if [ -f /var/www/html/wordpress/wp-config.php ]
+
+then
+	echo "wp-config.php already exists"
+else
+
+cd /var/www/html/wordpress/
+
+wp core download --locale=en_US --allow-root
+
 wp config create	--allow-root --dbname=${SQL_DATABASE} \
 			--dbuser=${SQL_USER} \
 			--dbpass=${SQL_PASSWORD} \
@@ -12,7 +21,8 @@ wp core install	--allow-root \
 			--title=${SITE_TITLE} \
 			--admin_user=${ADMIN_USER} \
 			--admin_password=${ADMIN_PASSWORD} \
-			--admin_email=${ADMIN_EMAIL};
+			--admin_email=${ADMIN_EMAIL} \
+			--skip-email;
 
 wp user create		--allow-root \
 			${USER1_LOGIN} ${USER1_MAIL} \
@@ -20,15 +30,13 @@ wp user create		--allow-root \
 			--user_pass=${USER1_PASS} ;
 
 wp cache flush --allow-root
-wp plugin install contact-form-7 --activate
-wp language core install en_US --activate
-wp theme delete twentynineteen twentytwenty
-wp plugin delete hello
-wp rewrite structure '/%postname%/'
 fi
 
 if [ ! -d /run/php ]; then
 	mkdir /run/php;
 fi
+
+chown -R www-data:www-data /var/www/*
+chmod -R 755 /var/www/*
 
 exec /usr/sbin/php-fpm7.3 -F -R

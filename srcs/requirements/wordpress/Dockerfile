@@ -11,13 +11,6 @@ RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 
 RUN apt-get update && apt-get install -y default-mysql-client
 RUN apt-get install -y mariadb-client
-RUN wget https://wordpress.org/wordpress-6.1.1.tar.gz -P /var/www/html
-RUN cd /var/www/html \
-	&& tar -xzf /var/www/html/wordpress-6.1.1.tar.gz \
-	&& rm /var/www/html/wordpress-6.1.1.tar.gz
-
-RUN chown -R www-data:www-data /var/www/*
-RUN chmod -R 755 /var/www/*
 
 EXPOSE 9000
 
